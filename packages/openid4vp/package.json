@@ -1,27 +1,23 @@
 {
-  "name": "@openid4vc/oauth2",
-  "version": "0.2.0",
+  "name": "@openid4vc/oid4vp",
+  "version": "0.1.4",
   "files": ["dist"],
   "license": "Apache-2.0",
-  "homepage": "https://github.com/openwallet-foundation-labs/oid4vc-ts/tree/main/packages/oauth2",
+  "homepage": "https://github.com/openwallet-foundation-labs/oid4vc-ts/tree/main/packages/oid4vp",
   "repository": {
     "type": "git",
     "url": "https://github.com/openwallet-foundation-labs/oid4vc-ts",
-    "directory": "packages/oauth2"
+    "directory": "packages/oid4vcp"
   },
-
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./src/index.ts",
-
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap"
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch"
   },
   "dependencies": {
+    "@openid4vc/oauth2": "workspace:*",
     "@openid4vc/utils": "workspace:*",
     "valibot": "catalog:"
-  },
-  "devDependencies": {
-    "jose": "catalog:"
   }
 }

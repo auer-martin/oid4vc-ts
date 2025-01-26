@@ -1,7 +1,6 @@
 {
   "name": "@openid4vc/oid4vci",
   "version": "0.2.0",
-  "exports": "./src/index.ts",
   "files": ["dist"],
   "license": "Apache-2.0",
   "homepage": "https://github.com/openwallet-foundation-labs/oid4vc-ts/tree/main/packages/oid4vci",
@@ -10,19 +9,9 @@
     "url": "https://github.com/openwallet-foundation-labs/oid4vc-ts",
     "directory": "packages/oid4vci"
   },
-  "publishConfig": {
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
-    "exports": {
-      ".": {
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.js",
-        "types": "./dist/index.d.ts"
-      },
-      "./package.json": "./package.json"
-    }
-  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./src/index.ts",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap"
   },

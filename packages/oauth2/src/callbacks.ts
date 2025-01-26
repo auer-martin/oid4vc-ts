@@ -39,6 +39,35 @@ export type VerifyJwtCallback = (
     }
 >
 
+export type DecryptJweCallback = (jwe: string) => OrPromise<
+  | {
+      decrypted: true
+      encryptionJwk: Jwk
+      plaintext: string
+    }
+  | {
+      decrypted: false
+      encryptionJwk?: Jwk
+      plaintext?: string
+    }
+>
+
+export type EncryptJweCallback = (
+  jweEncryptor: JwtSigner,
+  data: string
+) => OrPromise<
+  | {
+      encrypted: true
+      encryptionJwk: Jwk
+      jwe: string
+    }
+  | {
+      encrypted: false
+      encryptionJwk?: Jwk
+      jwe?: string
+    }
+>
+
 /**
  * Callback context provides the callbacks that are required for the oid4vc library
  */
@@ -57,6 +86,16 @@ export interface CallbackContext {
    * Sign jwt callback for signing of Json Web Tokens
    */
   signJwt: SignJwtCallback
+
+  /**
+   * Decrypt jwe callback for decrypting of Json Web Encryption
+   */
+  decryptJwe: DecryptJweCallback
+
+  /**
+   * Encrypt jwt callback for encrypting of Json Web Encryption
+   */
+  encryptJwe: EncryptJweCallback
 
   /**
    * Verify jwt callback for verification of Json Web Tokens
