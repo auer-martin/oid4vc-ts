@@ -55,18 +55,10 @@ export type DecryptJweCallback = (jwe: string) => OrPromise<
 export type EncryptJweCallback = (
   jweEncryptor: JwtSigner,
   data: string
-) => OrPromise<
-  | {
-      encrypted: true
-      encryptionJwk: Jwk
-      jwe: string
-    }
-  | {
-      encrypted: false
-      encryptionJwk?: Jwk
-      jwe?: string
-    }
->
+) => OrPromise<{
+  encryptionJwk: Jwk
+  jwe: string
+}>
 
 /**
  * Callback context provides the callbacks that are required for the oid4vc library

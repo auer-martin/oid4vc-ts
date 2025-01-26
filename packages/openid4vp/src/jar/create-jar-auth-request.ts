@@ -3,7 +3,6 @@ import {
   type Jwk,
   type JwtPayload,
   type JwtSigner,
-  Oauth2Error,
   jwtHeaderFromJwtSigner,
 } from '@openid4vc/oauth2'
 import type { JarAuthRequest } from './v-jar-auth-request'
@@ -42,9 +41,6 @@ export async function createJarAuthRequest(options: CreateJarAuthRequestOptions)
 
   if (jwtEncryptor) {
     const encryptionResult = await callbacks.encryptJwe(jwtEncryptor, requestObjectJwt)
-    if (!encryptionResult.encrypted) {
-      throw new Oauth2Error('Failed to encrypt jar request object.')
-    }
     requestObjectJwt = encryptionResult.jwe
     encryptionJwk = encryptionResult.encryptionJwk
   }

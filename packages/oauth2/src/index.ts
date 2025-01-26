@@ -17,9 +17,9 @@ export { vCompactJwe } from './common/jwe/v-jwe'
 export { vJwk, type Jwk, type JwkSet } from './common/jwk/v-jwk'
 
 export {
+  decodeJwt,
   DecodeJwtOptions,
   DecodeJwtResult,
-  decodeJwt,
   jwtHeaderFromJwtSigner,
   jwtSignerFromJwt,
 } from './common/jwt/decode-jwt'
