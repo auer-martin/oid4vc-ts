@@ -53,9 +53,9 @@ export async function verifyJarRequest(options: {
     ))
 
   const requestObjectIsEncrypted = v.is(vCompactJwe, requestObject as string)
-  const { encryptionJwk, plaintext: decryptedRequestObject } = requestObjectIsEncrypted
+  const { encryptionJwk, payload: decryptedRequestObject } = requestObjectIsEncrypted
     ? await decryptJarRequest({ jwe: requestObject, callbacks })
-    : { plaintext: requestObject, encryptionJwk: undefined }
+    : { payload: requestObject, encryptionJwk: undefined }
 
   const requestIsSigned = v.parse(vCompactJwt, decryptedRequestObject)
   if (!requestIsSigned) {

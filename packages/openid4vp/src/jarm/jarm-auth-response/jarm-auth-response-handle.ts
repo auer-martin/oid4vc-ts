@@ -3,6 +3,7 @@ import * as v from 'valibot'
 import {
   type CallbackContext,
   Oauth2Error,
+  decodeJweHeader,
   decodeJwt,
   jwtSignerFromJwt,
   vCompactJwe,
@@ -24,7 +25,7 @@ const decryptJarmRequestData = async (options: {
 }) => {
   const { request_data, callbacks } = options
 
-  const { header } = decodeJwt({ jwt: request_data })
+  const { header } = decodeJweHeader({ jwe: request_data })
   if (!header.kid) {
     throw new Oauth2Error('Jarm JWE is missing the protected header field "kid".')
   }
@@ -34,7 +35,7 @@ const decryptJarmRequestData = async (options: {
     throw new Oauth2Error('Failed to decrypt jarm auth response.')
   }
 
-  return result.plaintext
+  return result.payload
 }
 
 /**
@@ -46,7 +47,7 @@ export async function jarmAuthResponseHandle(options: {
   jarm_auth_response_jwt: string
   getAuthRequest: (
     authResponse: JarmAuthResponse | JarmAuthResponseEncryptedOnly
-  ) => Promise<{ auth_request: { client_id: string } }>
+  ) => Promise<{ auth_request: { client_id: string; nonce: string; state?: string } }>
   callbacks: Pick<CallbackContext, 'decryptJwe' | 'verifyJwt'>
 }) {
   const { jarm_auth_response_jwt } = options

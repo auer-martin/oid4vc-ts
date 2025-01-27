@@ -1,4 +1,4 @@
-export { jarmAuthResponseCreate } from './jarm-auth-response-create.js'
+export { createJarmAuthResponse } from './jarm-auth-response-create.js'
 export { jarmAuthResponseSend } from './jarm-auth-response-send.js'
 export { jarmAuthResponseHandle } from './jarm-auth-response/jarm-auth-response-handle.js'
 export {

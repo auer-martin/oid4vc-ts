@@ -175,7 +175,7 @@ export function jwtSignerFromJwt({ header, payload }: Pick<DecodeJwtResult, 'hea
 type IsSchemaProvided<T> = T extends undefined ? false : true
 
 // Helper type to infer the output type based on whether a schema is provided
-type InferSchemaOutput<
+export type InferSchemaOutput<
   ProvidedSchema extends BaseSchema | undefined,
   DefaultSchema extends BaseSchema,
 > = IsSchemaProvided<ProvidedSchema> extends true

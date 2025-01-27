@@ -1,6 +1,7 @@
 import {
   type CallbackContext,
   type Jwk,
+  type JwtEncryptor,
   type JwtPayload,
   type JwtSigner,
   jwtHeaderFromJwtSigner,
@@ -10,7 +11,7 @@ import type { JarAuthRequest } from './v-jar-auth-request'
 export interface CreateJarAuthRequestOptions {
   auth_request_params: JwtPayload & { client_id: string }
   jwtSigner: JwtSigner
-  jwtEncryptor?: JwtSigner
+  jwtEncryptor?: JwtEncryptor
   requestUri?: string
   additionalJwtPayload?: Record<string, unknown>
   callbacks: Pick<CallbackContext, 'signJwt' | 'encryptJwe'>

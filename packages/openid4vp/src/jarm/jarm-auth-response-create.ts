@@ -1,14 +1,20 @@
-import { type CallbackContext, type JwtSigner, Oauth2Error, jwtHeaderFromJwtSigner } from '@openid4vc/oauth2'
-import type { JarmAuthResponse } from './jarm-auth-response/m-jarm-auth-response.js'
+import {
+  type CallbackContext,
+  type JwtEncryptor,
+  type JwtSigner,
+  Oauth2Error,
+  jwtHeaderFromJwtSigner,
+} from '@openid4vc/oauth2'
+import type { JarmAuthResponse, JarmAuthResponseEncryptedOnly } from './jarm-auth-response/m-jarm-auth-response.js'
 
 export interface CreateJarmAuthResponseOptions {
-  jarmAuthResponse: JarmAuthResponse
+  jarmAuthResponse: JarmAuthResponse | JarmAuthResponseEncryptedOnly
   jwtSigner?: JwtSigner
-  jwtEncryptor?: JwtSigner
+  jwtEncryptor?: JwtEncryptor
   callbacks: Pick<CallbackContext, 'signJwt' | 'encryptJwe'>
 }
 
-export async function jarmAuthResponseCreate(input: CreateJarmAuthResponseOptions) {
+export async function createJarmAuthResponse(input: CreateJarmAuthResponseOptions) {
   const { jarmAuthResponse, jwtEncryptor, jwtSigner, callbacks } = input
   if (!jwtSigner && jwtEncryptor) {
     const { jwe } = await callbacks.encryptJwe(jwtEncryptor, JSON.stringify(jarmAuthResponse))

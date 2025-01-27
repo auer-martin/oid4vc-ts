@@ -13,6 +13,7 @@ export { Oauth2ErrorCodes, vOauth2ErrorResponse, type Oauth2ErrorResponse } from
 export { isJwkInSet } from './common/jwk/jwks'
 
 export type { AccessTokenProfileJwtPayload } from './access-token/v-access-token-jwt'
+export { decodeJweHeader } from './common/jwe/decode-jwe-header'
 export { vCompactJwe } from './common/jwe/v-jwe'
 export { vJwk, type Jwk, type JwkSet } from './common/jwk/v-jwk'
 
@@ -23,6 +24,9 @@ export {
   jwtHeaderFromJwtSigner,
   jwtSignerFromJwt,
 } from './common/jwt/decode-jwt'
+
+export type { JwtEncryptor } from './common/jwt/v-jwt'
+
 export {
   JwtSigner,
   JwtSignerCustom,

@@ -8,6 +8,7 @@ export const jarmAuthResponseValidate = (input: {
 }) => {
   const { auth_request, auth_response } = input
 
+  // The traditional Jarm Validation Methods do not account for the encrypted response.
   if (!v.is(JarmAuthResponse, auth_response)) {
     return
   }

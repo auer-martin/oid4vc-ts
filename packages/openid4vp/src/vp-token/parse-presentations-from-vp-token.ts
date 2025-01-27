@@ -2,6 +2,7 @@ import { Oauth2Error } from '@openid4vc/oauth2'
 import * as v from 'valibot'
 import { vCompactJwt } from '../../../oauth2/src/common/jwt/v-jwt'
 import { parseIfJson } from '../parse-raw-json.js'
+import type { VpToken } from './v-vp-token.js'
 
 export type VpTokenPresentationParseResult =
   | {
@@ -25,11 +26,12 @@ export type VpTokenPresentationParseResult =
       presentation: Record<string, unknown>
     }
 
-export function parsePresentationsFromVpToken(options: { vp_token: unknown }): [
+export function parsePresentationsFromVpToken(options: { vp_token: VpToken }): [
   VpTokenPresentationParseResult,
   ...VpTokenPresentationParseResult[],
 ] {
-  const { vp_token } = options
+  const { vp_token: _vp_token } = options
+  const vp_token = parseIfJson(_vp_token)
 
   if (Array.isArray(vp_token)) {
     if (vp_token.length === 0) {

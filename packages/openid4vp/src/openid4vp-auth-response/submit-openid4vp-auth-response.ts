@@ -1,18 +1,28 @@
 import type { CallbackContext } from '@openid4vc/oauth2'
-import { ContentType, defaultFetcher, uriEncodeObject } from '@openid4vc/utils'
+import { ContentType, defaultFetcher } from '@openid4vc/utils'
+import { jarmAuthResponseSend } from '../jarm/jarm-auth-response-send.js'
 import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request.js'
 import type { Openid4vpAuthResponse } from './v-openid4vp-auth-response.js'
+import { xWwwFormUrlEncodeObject } from './x-www-form-url-encode.js'
 
 export async function submitOpenid4vpAuthorizationResponse(input: {
   request: Pick<Openid4vpAuthRequest, 'redirect_uri' | 'response_uri'>
   response: Openid4vpAuthResponse
+  jarm?: { responseJwt: string }
   callbacks: Pick<CallbackContext, 'fetch'>
 }) {
-  const { request, response, callbacks } = input
-
-  const encodedResponse = uriEncodeObject(response)
-
+  const { request, response, jarm, callbacks } = input
   const url = request.redirect_uri ?? request.response_uri
+
+  if (jarm) {
+    return jarmAuthResponseSend({
+      authRequest: request,
+      jarmAuthResponseJwt: jarm.responseJwt,
+    })
+  }
+
+  const encodedResponse = xWwwFormUrlEncodeObject(response)
+
   if (!url) {
     throw new Error('No redirect_uri or response_uri provided')
   }
@@ -27,6 +37,7 @@ export async function submitOpenid4vpAuthorizationResponse(input: {
   })
 
   return {
+    response_mode: 'direct_post',
     response: submissionResponse,
   }
 }

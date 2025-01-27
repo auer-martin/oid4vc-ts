@@ -84,6 +84,8 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
       throw new Oauth2Error('OpenId4Vp Authorization Request is missing the required presentation_definition.')
     }
 
+    const presentations = parsePresentationsFromVpToken({ vp_token: responseParams.vp_token })
+
     return {
       type: 'pex',
       state: responseParams.state,
@@ -92,12 +94,12 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
         ? {
             scope: requestParams.scope,
             presentation_submission: responseParams.presentation_submission,
-            presentations: parsePresentationsFromVpToken({ vp_token: responseParams.vp_token }),
+            presentations,
           }
         : {
             presentation_definition: requestParams.presentation_definition,
             presentation_submission: responseParams.presentation_submission,
-            presentations: parsePresentationsFromVpToken({ vp_token: responseParams.vp_token }),
+            presentations,
           },
     }
   }
@@ -132,16 +134,4 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
   throw new Oauth2Error(
     'Invalid OpenId4Vp Authorization Response. Response neither contains a presentation_submission nor a dcql presentation.'
   )
-}
-
-function decodePresentation(encodedPresentation: string | Record<string, unknown>) {
-  if (typeof encodedPresentation === 'string') {
-    try {
-      return JSON.parse(encodedPresentation) as Record<string, unknown>
-    } catch (error) {
-      // we cannot now if it is a string representing json or valid presentation in string format
-    }
-  }
-
-  return encodedPresentation
 }

@@ -1,7 +1,7 @@
 import type { Fetch, OrPromise } from '@openid4vc/utils'
 import type { ClientAuthenticationCallback } from './client-authentication'
 import type { Jwk } from './common/jwk/v-jwk'
-import type { JwtHeader, JwtPayload, JwtSigner } from './common/jwt/v-jwt'
+import type { JwtEncryptor, JwtHeader, JwtPayload, JwtSigner } from './common/jwt/v-jwt'
 
 /**
  * Supported hashing algorithms
@@ -39,21 +39,30 @@ export type VerifyJwtCallback = (
     }
 >
 
-export type DecryptJweCallback = (jwe: string) => OrPromise<
+export interface DecryptJweCallbackOptions {
+  jwk: Jwk
+}
+
+export type DecryptJweCallback = (
+  jwe: string,
+  options?: DecryptJweCallbackOptions
+) => OrPromise<
   | {
       decrypted: true
       encryptionJwk: Jwk
-      plaintext: string
+      payload: string
+      header: JwtHeader
     }
   | {
       decrypted: false
       encryptionJwk?: Jwk
-      plaintext?: string
+      payload?: string
+      header?: JwtHeader
     }
 >
 
 export type EncryptJweCallback = (
-  jweEncryptor: JwtSigner,
+  jweEncryptor: JwtEncryptor,
   data: string
 ) => OrPromise<{
   encryptionJwk: Jwk
