@@ -3,6 +3,7 @@ import * as v from 'valibot'
 import {
   type CallbackContext,
   type Jwk,
+  JwtSigner,
   Oauth2Error,
   Oauth2ServerErrorResponseError,
   decodeJwt,
@@ -35,6 +36,7 @@ export async function verifyJarRequest(options: {
   send_by: 'value' | 'reference'
   encryptionJwk?: Jwk
   signerJwk: Jwk
+  jwtSigner: JwtSigner
 }> {
   const { jar_request_params, callbacks, wallet } = options
 
@@ -62,7 +64,7 @@ export async function verifyJarRequest(options: {
     throw new Oauth2Error('Jar Request Object is not a valid JWS.')
   }
 
-  const { auth_request_params, signerJwk } = await verifyJarRequestObject({ decryptedRequestObject, callbacks })
+  const { auth_request_params, signerJwk, jwtSigner } = await verifyJarRequestObject({ decryptedRequestObject, callbacks })
   if (!auth_request_params.client_id) {
     throw new Oauth2Error('Jar Request Object is missing the required "client_id" field.')
   }
@@ -76,6 +78,7 @@ export async function verifyJarRequest(options: {
     auth_request_params,
     signerJwk,
     encryptionJwk,
+    jwtSigner,
   }
 }
 
@@ -119,5 +122,5 @@ async function verifyJarRequestObject(options: {
     throw new Oauth2Error('Jar Request Object signature verification failed.')
   }
 
-  return { auth_request_params: jwt.payload, signerJwk }
+  return { auth_request_params: jwt.payload, signerJwk, jwtSigner }
 }

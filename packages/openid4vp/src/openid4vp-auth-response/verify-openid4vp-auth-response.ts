@@ -7,10 +7,7 @@ import {
 } from '../vp-token/parse-presentations-from-vp-token.js'
 import type { Openid4vpAuthResponse } from './v-openid4vp-auth-response'
 
-export type VerifyOpenid4VpAuthorizationResponseResult = {
-  state?: string
-  nonce: string
-} & (
+export type VerifyOpenid4VpAuthorizationResponseResult =
   | {
       type: 'pex'
       pex: {
@@ -42,7 +39,6 @@ export type VerifyOpenid4VpAuthorizationResponseResult = {
           }
       )
     }
-)
 
 /**
  * The following steps need to be done manually
@@ -55,9 +51,6 @@ export type VerifyOpenid4VpAuthorizationResponseResult = {
 export function verifyOpenid4vpAuthorizationResponse(options: {
   requestParams: Openid4vpAuthRequest
   responseParams: Openid4vpAuthResponse
-  jarm?: {
-    x: unknown
-  }
 }): VerifyOpenid4VpAuthorizationResponseResult {
   const { requestParams, responseParams } = options
   // todo i think the response prarms  should also contain a nonce
@@ -85,11 +78,8 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
     }
 
     const presentations = parsePresentationsFromVpToken({ vp_token: responseParams.vp_token })
-
     return {
       type: 'pex',
-      state: responseParams.state,
-      nonce: requestParams.nonce,
       pex: requestParams.scope
         ? {
             scope: requestParams.scope,
@@ -115,18 +105,17 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
       throw new Oauth2Error('If DCQL was used the vp_token must be a JSON-encoded object.')
     }
 
+    const presentation = parseSinglePresentationsFromVpToken({ vp_token: responseParams.vp_token })
     return {
       type: 'dcql',
-      state: requestParams.state,
-      nonce: requestParams.nonce,
       dcql: requestParams.scope
         ? {
             scope: requestParams.scope,
-            presentation: parseSinglePresentationsFromVpToken({ vp_token: responseParams.vp_token }),
+            presentation,
           }
         : {
             query: requestParams.dcql_query,
-            presentation: parseSinglePresentationsFromVpToken({ vp_token: responseParams.vp_token }),
+            presentation,
           },
     }
   }

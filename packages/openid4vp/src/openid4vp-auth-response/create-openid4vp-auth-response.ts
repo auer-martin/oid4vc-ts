@@ -98,7 +98,7 @@ export async function createOpenid4vpAuthorizationResponse(options: {
           method: 'jwk',
           publicJwk: clientMetaJwks.encJwk,
           apu: jarm.jweEncryptor.nonce,
-          apv: jarm.jweEncryptor.nonce,
+          apv: requestParams.nonce,
           alg: supportedJarmMetadata.client_metadata.authorization_encrypted_response_alg,
           enc: supportedJarmMetadata.client_metadata.authorization_encrypted_response_enc,
         }
