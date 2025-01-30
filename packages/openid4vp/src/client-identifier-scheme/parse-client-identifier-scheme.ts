@@ -1,5 +1,4 @@
 import { Oauth2Error } from '@openid4vc/oauth2'
-import { getDomainFromUrl } from '../get-domain.js'
 import type { verifyJarRequest } from '../jar/index.js'
 import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request.js'
 import type { X509Callbacks } from '../openid4vp-auth-request/x509-callbacks.js'
@@ -184,7 +183,7 @@ export function parseClientIdentifier(
 
     if (scheme === 'x509_san_dns' && options.callbacks.getX509SanDnsNames) {
       const dnsNames = options.callbacks.getX509SanDnsNames(jar.jwtSigner.x5c[0])
-      if (!dnsNames.includes(getDomainFromUrl(identifierPart))) {
+      if (!dnsNames.includes(identifierPart)) {
         throw new Oauth2Error('Invalid client identifier. Client identifier must be a valid DNS name.')
       }
     } else if (scheme === 'x509_san_uri' && options.callbacks.getX509SanUriNames) {

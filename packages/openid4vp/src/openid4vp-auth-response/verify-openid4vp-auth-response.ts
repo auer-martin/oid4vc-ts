@@ -105,7 +105,7 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
       throw new Oauth2Error('If DCQL was used the vp_token must be a JSON-encoded object.')
     }
 
-    const presentation = parseSinglePresentationsFromVpToken({ vp_token: responseParams.vp_token })
+    const presentation = parseSinglePresentationsFromVpToken({ vp_token: responseParams.vp_token, path: '$' })
     return {
       type: 'dcql',
       dcql: requestParams.scope

@@ -1,5 +1,6 @@
 export { ClientIdScheme } from './client-identifier-scheme/v-client-id-scheme.js'
 export { jarmAuthResponseHandle } from './jarm/jarm-auth-response/jarm-auth-response-handle.js'
+export { JarmClientMetadata } from './jarm/metadata/m-jarm-dcr-metadata.js'
 export { createOpenid4vpAuthorizationRequest } from './openid4vp-auth-request/create-openid4vp-auth-request'
 export { parseOpenid4vpRequestParams } from './openid4vp-auth-request/parse-openid4vp-auth-request-params'
 export {
@@ -13,6 +14,8 @@ export { submitOpenid4vpAuthorizationResponse } from './openid4vp-auth-response/
 export type { Openid4vpAuthResponse } from './openid4vp-auth-response/v-openid4vp-auth-response.js'
 export { verifyOpenid4vpAuthorizationResponse } from './openid4vp-auth-response/verify-openid4vp-auth-response'
 export { parseIfJson } from './parse-raw-json'
+export { parseTransactionData } from './transaction-data/parse-transaction-data.js'
+export type { TransactionDataEntry } from './transaction-data/v-transaction-data.js'
 export {
   parsePresentationsFromVpToken,
   VpTokenPresentationParseResult,

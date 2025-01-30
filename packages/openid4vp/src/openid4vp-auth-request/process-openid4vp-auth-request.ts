@@ -3,6 +3,7 @@ import * as v from 'valibot'
 import { parseClientIdentifier } from '../client-identifier-scheme/parse-client-identifier-scheme.js'
 import { verifyJarRequest } from '../jar/index.js'
 import { type JarAuthRequest, vJarAuthRequest } from '../jar/v-jar-auth-request.js'
+import { parseTransactionData } from '../transaction-data/parse-transaction-data.js'
 import type { WalletMetadata } from '../v-wallet-metadata.js'
 import { type Openid4vpAuthRequest, vOpenid4vpAuthRequest } from './v-openid4vp-auth-request.js'
 import { validateOpenid4vpAuthRequestParams } from './validate-openid4vp-auth-request.js'
@@ -50,8 +51,13 @@ export async function processOpenid4vpAuthRequest(
     }
   }
 
+  const transactionData = authRequestParams.transaction_data
+    ? parseTransactionData(authRequestParams.transaction_data)
+    : undefined
+
   return {
-    request: authRequestParams,
+    transactionData,
+    payload: authRequestParams,
     jar,
     client: {
       ...clientMeta,
