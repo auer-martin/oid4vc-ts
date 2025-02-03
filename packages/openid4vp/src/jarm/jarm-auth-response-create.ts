@@ -1,6 +1,6 @@
 import {
   type CallbackContext,
-  type JwtEncryptor,
+  type JweEncryptor,
   type JwtSigner,
   Oauth2Error,
   jwtHeaderFromJwtSigner,
@@ -10,7 +10,7 @@ import type { JarmAuthResponse, JarmAuthResponseEncryptedOnly } from './jarm-aut
 export interface CreateJarmAuthResponseOptions {
   jarmAuthResponse: JarmAuthResponse | JarmAuthResponseEncryptedOnly
   jwtSigner?: JwtSigner
-  jwtEncryptor?: JwtEncryptor
+  jwtEncryptor?: JweEncryptor
   callbacks: Pick<CallbackContext, 'signJwt' | 'encryptJwe'>
 }
 

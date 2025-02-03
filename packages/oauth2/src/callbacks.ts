@@ -1,7 +1,7 @@
 import type { Fetch, OrPromise } from '@openid4vc/utils'
 import type { ClientAuthenticationCallback } from './client-authentication'
 import type { Jwk } from './common/jwk/v-jwk'
-import type { JwtEncryptor, JwtHeader, JwtPayload, JwtSigner } from './common/jwt/v-jwt'
+import type { JweEncryptor, JwtHeader, JwtPayload, JwtSigner } from './common/jwt/v-jwt'
 
 /**
  * Supported hashing algorithms
@@ -39,30 +39,30 @@ export type VerifyJwtCallback = (
     }
 >
 
-export interface DecryptJweCallbackOptions {
+export interface DecryptJwtCallbackOptions {
   jwk: Jwk
 }
 
-export type DecryptJweCallback = (
+export type DecryptJwtCallback = (
   jwe: string,
-  options?: DecryptJweCallbackOptions
+  options?: DecryptJwtCallbackOptions
 ) => OrPromise<
   | {
       decrypted: true
-      encryptionJwk: Jwk
+      decryptionJwk: Jwk
       payload: string
       header: JwtHeader
     }
   | {
       decrypted: false
-      encryptionJwk?: Jwk
+      decryptionJwk?: Jwk
       payload?: string
       header?: JwtHeader
     }
 >
 
 export type EncryptJweCallback = (
-  jweEncryptor: JwtEncryptor,
+  jweEncryptor: JweEncryptor,
   data: string
 ) => OrPromise<{
   encryptionJwk: Jwk
@@ -89,12 +89,12 @@ export interface CallbackContext {
   signJwt: SignJwtCallback
 
   /**
-   * Decrypt jwe callback for decrypting of Json Web Encryption
+   * Decrypt jwe callback for decrypting of Json Web Encryptions
    */
-  decryptJwe: DecryptJweCallback
+  decryptJwt: DecryptJwtCallback
 
   /**
-   * Encrypt jwt callback for encrypting of Json Web Encryption
+   * Encrypt jwt callback for encrypting of Json Web Encryptions
    */
   encryptJwe: EncryptJweCallback
 

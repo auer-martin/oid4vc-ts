@@ -36,7 +36,7 @@ export type JwtSignerCustom = {
 
 export type JwtSigner = JwtSignerDid | JwtSignerJwk | JwtSignerX5c | JwtSignerTrustChain | JwtSignerCustom
 
-export type JwtEncryptor = JwtSignerJwk & {
+export type JweEncryptor = JwtSignerJwk & {
   enc: string
   apu?: string
   apv?: string

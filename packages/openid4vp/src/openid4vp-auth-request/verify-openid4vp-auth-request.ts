@@ -15,7 +15,7 @@ export async function verifyOpenid4vpAuthRequest(
       nonce?: string
       metadata?: WalletMetadata
     }
-    callbacks: Pick<CallbackContext, 'verifyJwt' | 'decryptJwe' | 'getX509SanDnsNames' | 'getX509SanUriNames'>
+    callbacks: Pick<CallbackContext, 'verifyJwt' | 'decryptJwt' | 'getX509SanDnsNames' | 'getX509SanUriNames'>
   }
 ) {
   const { wallet, callbacks } = options

@@ -26,7 +26,7 @@ import { type JarAuthRequest, validateJarAuthRequest } from '../v-jar-auth-reque
  */
 export async function verifyJarRequest(options: {
   jarRequestParams: JarAuthRequest
-  callbacks: Pick<CallbackContext, 'verifyJwt' | 'decryptJwe'>
+  callbacks: Pick<CallbackContext, 'verifyJwt' | 'decryptJwt'>
   wallet?: {
     metadata?: WalletMetadata
     nonce?: string
@@ -34,7 +34,7 @@ export async function verifyJarRequest(options: {
 }): Promise<{
   authRequestParams: JarRequestObjectPayload
   sendBy: 'value' | 'reference'
-  encryptionJwk?: Jwk
+  decryptionJwk?: Jwk
   signerJwk: Jwk
   jwtSigner: JwtSigner
 }> {
@@ -55,9 +55,9 @@ export async function verifyJarRequest(options: {
     ))
 
   const requestObjectIsEncrypted = v.is(vCompactJwe, requestObject as string)
-  const { encryptionJwk, payload: decryptedRequestObject } = requestObjectIsEncrypted
+  const { decryptionJwk, payload: decryptedRequestObject } = requestObjectIsEncrypted
     ? await decryptJarRequest({ jwe: requestObject, callbacks })
-    : { payload: requestObject, encryptionJwk: undefined }
+    : { payload: requestObject, decryptionJwk: undefined }
 
   const requestIsSigned = v.parse(vCompactJwt, decryptedRequestObject)
   if (!requestIsSigned) {
@@ -80,14 +80,14 @@ export async function verifyJarRequest(options: {
     sendBy,
     authRequestParams,
     signerJwk,
-    encryptionJwk,
+    decryptionJwk,
     jwtSigner,
   }
 }
 
 async function decryptJarRequest(options: {
   jwe: string
-  callbacks: Pick<CallbackContext, 'decryptJwe'>
+  callbacks: Pick<CallbackContext, 'decryptJwt'>
 }) {
   const { jwe, callbacks } = options
 
@@ -96,7 +96,7 @@ async function decryptJarRequest(options: {
     throw new Oauth2Error('Jar JWE is missing the protected header field "kid".')
   }
 
-  const decryptionResult = await callbacks.decryptJwe(jwe)
+  const decryptionResult = await callbacks.decryptJwt(jwe)
   if (!decryptionResult.decrypted) {
     throw new Oauth2ServerErrorResponseError({
       error: 'invalid_request_object',

@@ -17,21 +17,21 @@ export async function parseJarmAuthResponseDirectPostJwt(request: Request) {
 
   const formData = await request.clone().text()
   const urlSearchParams = new URLSearchParams(formData)
-  const request_data = Object.fromEntries(urlSearchParams)
+  const requestData = Object.fromEntries(urlSearchParams)
 
-  if (!request_data.response) {
+  if (!requestData.response) {
     throw new Oauth2Error('Received invalid JARM request data. Response Jwt is missing.')
   }
 
-  if (v.is(vCompactJwt, request_data.response)) {
-    return { jarmAuthResponseJwt: request_data.response }
+  if (v.is(vCompactJwt, requestData.response)) {
+    return { jarmAuthResponseJwt: requestData.response }
   }
 
-  if (v.is(vCompactJwe, request_data.response)) {
-    return { jarmAuthResponseJwt: request_data.response }
+  if (v.is(vCompactJwe, requestData.response)) {
+    return { jarmAuthResponseJwt: requestData.response }
   }
 
   throw new Oauth2Error('Received invalid JARM auth response. Expected JWE or JWS.', {
-    cause: request_data,
+    cause: requestData,
   })
 }

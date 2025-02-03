@@ -79,21 +79,3 @@ This project is licensed under the Apache License Version 2.0 (Apache-2.0).
 ## Credits
 
 This library was initially created by [Animo](https://github.com) as part of the [SPRIN-D EUDI Wallet Prototypes Funke](https://www.sprind.org/en/impulses/challenges/eudi-wallet-prototypes).
-
-Technische Deliverables
-• Plattform-alpha launch mit experimenteller EUDI-Wallet-Integration (Atleast Italy compatible)
-• API für die Integration in bestehende Systeme
-• Einfache (auch partielle) Self-Hosting-Lösung
-• Software Development Kit (SDK) mit grundlegenden UI-Komponenten
-• Deployment- und Wartung
-• Backup- und Recovery Konzepts
-• Monitoring System
-
-Validierte Geschäftsergebnisse
-• Klar definierte Zielgruppensegmente und dokumentierte Anforderungsprofile
-• Geschäftsmodell mit Preisstrukturen
-• Dokumentation der Pilotprojekt-Ergebnisse mit quantifizierten Effizienzgewinnen
-• Wettbewerbsanalyse und Alleinstellungsmerkmale
-• Schulungs- Wartungs- und Support-Konzept
-• technische und funktionale Produktdokumentation
-• Produkt-Roadmap für die weitere Entwicklung

@@ -6,10 +6,10 @@ import {
   stringToJsonWithErrorHandling,
 } from '@openid4vc/utils'
 import { Oauth2JwtParseError } from '../../error/Oauth2JwtParseError'
-import type { InferSchemaOutput } from '../jwt/decode-jwt'
-import { vJwtHeader } from '../jwt/v-jwt.js'
+import type { InferSchemaOutput } from './decode-jwt'
+import { vJwtHeader } from './v-jwt.js'
 
-export interface DecodeJweOptions<HeaderSchema extends BaseSchema | undefined> {
+export interface DecodeJwtHeaderOptions<HeaderSchema extends BaseSchema | undefined> {
   /**
    * The comapct encoded jwt
    */
@@ -26,12 +26,12 @@ export type DecodeJweResult<HeaderSchema extends BaseSchema | undefined = undefi
   header: InferSchemaOutput<HeaderSchema, typeof vJwtHeader>
 }
 
-export function decodeJweHeader<HeaderSchema extends BaseSchema | undefined = undefined>(
-  options: DecodeJweOptions<HeaderSchema>
+export function decodeJwtHeader<HeaderSchema extends BaseSchema | undefined = undefined>(
+  options: DecodeJwtHeaderOptions<HeaderSchema>
 ): DecodeJweResult<HeaderSchema> {
   const jwtParts = options.jwe.split('.')
-  if (jwtParts.length <= 3) {
-    throw new Oauth2JwtParseError('Jwt is not a valid jwe, unable to decode')
+  if (jwtParts.length <= 2) {
+    throw new Oauth2JwtParseError('Jwt is not a valid jwt, unable to decode')
   }
 
   let headerJson: Record<string, unknown>
