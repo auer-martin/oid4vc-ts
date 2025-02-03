@@ -35,7 +35,7 @@ export async function createJarAuthRequest(options: CreateJarAuthRequestOptions)
   let encryptionJwk: Jwk | undefined
 
   const { jwt, signerJwk } = await callbacks.signJwt(jwtSigner, {
-    header: jwtHeaderFromJwtSigner(jwtSigner),
+    header: { ...jwtHeaderFromJwtSigner(jwtSigner), typ: 'oauth-authz-req+jwt' },
     payload: { ...options.additionalJwtPayload, ...authRequestParams },
   })
   requestObjectJwt = jwt
