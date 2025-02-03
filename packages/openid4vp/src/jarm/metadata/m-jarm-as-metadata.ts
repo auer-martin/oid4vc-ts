@@ -1,4 +1,4 @@
-import * as v from 'valibot';
+import * as v from 'valibot'
 
 export const JarmServerMetadata = v.object({
   authorization_signing_alg_values_supported: v.pipe(
@@ -21,14 +21,14 @@ export const JarmServerMetadata = v.object({
       'JSON array containing a list of the JWE [RFC7516] encryption algorithms (enc values) JWA [RFC7518] supported by the authorization endpoint to encrypt the response.'
     )
   ),
-});
+})
 
 /**
  * Authorization servers SHOULD publish the supported algorithms for signing and encrypting the JWT of an authorization response by utilizing OAuth 2.0 Authorization Server Metadata [RFC8414] parameters.
  */
 export namespace JarmServerMetadata {
-  export type Input = v.InferInput<typeof JarmServerMetadata>;
-  export type Output = v.InferOutput<typeof JarmServerMetadata>;
+  export type Input = v.InferInput<typeof JarmServerMetadata>
+  export type Output = v.InferOutput<typeof JarmServerMetadata>
 }
 
-export type JarmServerMetadata = JarmServerMetadata.Output;
+export type JarmServerMetadata = JarmServerMetadata.Output

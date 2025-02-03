@@ -72,7 +72,7 @@ const result = verifyAttestationJWT({
  * @param {number} [options.clockSkewSec=300] - Allowed clock skew in seconds
  * @returns {Object} Result object with success boolean and any error message
  */
-async function verifyAttestationJWT(
+export async function verifyAttestationJWT(
   jwt: {
     signer: JwtSigner
     header: JwtHeader

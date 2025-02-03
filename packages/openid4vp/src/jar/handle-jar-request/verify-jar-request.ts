@@ -3,7 +3,7 @@ import * as v from 'valibot'
 import {
   type CallbackContext,
   type Jwk,
-  JwtSigner,
+  type JwtSigner,
   Oauth2Error,
   Oauth2ServerErrorResponseError,
   decodeJwt,
@@ -11,7 +11,7 @@ import {
   vCompactJwe,
   vCompactJwt,
 } from '@openid4vc/oauth2'
-import type { WalletMetadata } from '../../v-wallet-metadata.js'
+import type { WalletMetadata } from '../../models/v-wallet-metadata'
 import { fetchJarRequestObject } from '../jar-request-object/fetch-jar-request-object'
 import { type JarRequestObjectPayload, vJarRequestObjectPayload } from '../jar-request-object/v-jar-request-object'
 import { type JarAuthRequest, validateJarAuthRequest } from '../v-jar-auth-request'
@@ -64,7 +64,10 @@ export async function verifyJarRequest(options: {
     throw new Oauth2Error('Jar Request Object is not a valid JWS.')
   }
 
-  const { auth_request_params, signerJwk, jwtSigner } = await verifyJarRequestObject({ decryptedRequestObject, callbacks })
+  const { auth_request_params, signerJwk, jwtSigner } = await verifyJarRequestObject({
+    decryptedRequestObject,
+    callbacks,
+  })
   if (!auth_request_params.client_id) {
     throw new Oauth2Error('Jar Request Object is missing the required "client_id" field.')
   }

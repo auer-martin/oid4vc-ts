@@ -13,7 +13,6 @@ export { createOpenid4vpAuthorizationResponse } from './openid4vp-auth-response/
 export { submitOpenid4vpAuthorizationResponse } from './openid4vp-auth-response/submit-openid4vp-auth-response'
 export type { Openid4vpAuthResponse } from './openid4vp-auth-response/v-openid4vp-auth-response.js'
 export { verifyOpenid4vpAuthorizationResponse } from './openid4vp-auth-response/verify-openid4vp-auth-response'
-export { parseIfJson } from './parse-raw-json'
 export { parseTransactionData } from './transaction-data/parse-transaction-data.js'
 export type { TransactionDataEntry } from './transaction-data/v-transaction-data.js'
 export {

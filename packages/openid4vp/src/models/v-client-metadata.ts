@@ -1,6 +1,6 @@
 import { vJwkSet } from '@openid4vc/oauth2'
 import * as v from 'valibot'
-import { JarmClientMetadata } from './jarm/metadata/m-jarm-dcr-metadata.js'
+import { JarmClientMetadata } from '../jarm/metadata/m-jarm-dcr-metadata.js'
 import { vVpFormats } from './v-vp-formats.js'
 
 // Authoritative data the Wallet is able to obtain about the Client from other sources,

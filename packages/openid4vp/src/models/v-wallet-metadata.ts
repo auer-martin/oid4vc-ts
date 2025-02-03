@@ -1,5 +1,5 @@
 import * as v from 'valibot'
-import { vClientIdScheme } from './client-identifier-scheme/v-client-id-scheme.js'
+import { vClientIdScheme } from '../client-identifier-scheme/v-client-id-scheme.js'
 import { vVpFormatsSupported } from './v-vp-formats-supported.js'
 
 export const vWalletMetadata = v.looseObject({

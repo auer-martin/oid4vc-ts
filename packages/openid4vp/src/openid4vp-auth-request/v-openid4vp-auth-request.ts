@@ -1,7 +1,5 @@
-import {} from '@openid4vc/oauth2'
 import * as v from 'valibot'
-import {} from '../jar/v-jar-auth-request.js'
-import { vClientMetadata } from '../v-client-metadata.js'
+import { vClientMetadata } from '../models/v-client-metadata'
 
 export const vOpenid4vpAuthRequest = v.looseObject({
   response_type: v.literal('vp_token'),

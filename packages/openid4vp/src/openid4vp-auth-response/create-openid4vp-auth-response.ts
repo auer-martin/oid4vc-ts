@@ -10,7 +10,6 @@ export async function createOpenid4vpAuthorizationResponse(options: {
   responseParams: Openid4vpAuthResponse & { state?: never }
   jarm?: {
     jwtSigner?: JwtSigner
-    // biome-ignore lint/complexity/noBannedTypes: <explanation>
     jweEncryptor?: {
       nonce: string
     }

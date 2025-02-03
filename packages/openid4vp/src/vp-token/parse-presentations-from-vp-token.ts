@@ -1,7 +1,7 @@
 import { Oauth2Error } from '@openid4vc/oauth2'
+import { vCompactJwt } from '@openid4vc/oauth2'
+import { parseIfJson } from '@openid4vc/utils'
 import * as v from 'valibot'
-import { vCompactJwt } from '../../../oauth2/src/common/jwt/v-jwt'
-import { parseIfJson } from '../parse-raw-json.js'
 import type { VpToken } from './v-vp-token.js'
 
 export type VpTokenPresentationParseResult =

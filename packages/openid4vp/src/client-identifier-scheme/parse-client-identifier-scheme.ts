@@ -1,8 +1,8 @@
 import { Oauth2Error } from '@openid4vc/oauth2'
 import type { verifyJarRequest } from '../jar/index.js'
+import type { ClientMetadata } from '../models/v-client-metadata.js'
 import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request.js'
 import type { X509Callbacks } from '../openid4vp-auth-request/x509-callbacks.js'
-import type { ClientMetadata } from '../v-client-metadata.js'
 import { type ClientIdScheme, vClientIdScheme } from './v-client-id-scheme.js'
 
 /**

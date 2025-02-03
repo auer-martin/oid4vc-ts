@@ -29,6 +29,7 @@ export {
   parseWithErrorHandling,
   stringToJsonWithErrorHandling,
   valibotRecursiveFlattenIssues,
+  parseIfJson,
   type BaseSchema,
   type InferOutputUnion,
 } from './parse'

@@ -1,5 +1,5 @@
-import { Oauth2Error } from '@openid4vc/oauth2'
-import { URL } from '@openid4vc/utils'
+import { type CallbackContext, Oauth2Error } from '@openid4vc/oauth2'
+import { URL, defaultFetcher } from '@openid4vc/utils'
 
 interface JarmAuthResponseSendOptions {
   authRequest: {
@@ -7,10 +7,11 @@ interface JarmAuthResponseSendOptions {
     redirect_uri?: string
   }
   jarmAuthResponseJwt: string
+  callbacks: Pick<CallbackContext, 'fetch'>
 }
 
 export const jarmAuthResponseSend = (options: JarmAuthResponseSendOptions) => {
-  const { authRequest, jarmAuthResponseJwt } = options
+  const { authRequest, jarmAuthResponseJwt, callbacks } = options
 
   const responseEndpoint = authRequest.response_uri ?? authRequest.redirect_uri
   if (!responseEndpoint) {
@@ -18,11 +19,15 @@ export const jarmAuthResponseSend = (options: JarmAuthResponseSendOptions) => {
   }
 
   const responseEndpointUrl = new URL(responseEndpoint)
-  return handleDirectPostJwt(responseEndpointUrl, jarmAuthResponseJwt)
+  return handleDirectPostJwt(responseEndpointUrl, jarmAuthResponseJwt, callbacks)
 }
 
-async function handleDirectPostJwt(responseEndpoint: URL, responseJwt: string) {
-  const response = await fetch(responseEndpoint, {
+async function handleDirectPostJwt(
+  responseEndpoint: URL,
+  responseJwt: string,
+  callbacks: Pick<CallbackContext, 'fetch'>
+) {
+  const response = await (callbacks.fetch ?? defaultFetcher)(responseEndpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `response=${responseJwt}`,

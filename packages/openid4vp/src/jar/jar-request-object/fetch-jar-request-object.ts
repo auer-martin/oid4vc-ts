@@ -1,7 +1,7 @@
 import { Oauth2ServerErrorResponseError } from '@openid4vc/oauth2'
 import { type BaseSchema, ContentType, type Fetch, createValibotFetcher } from '@openid4vc/utils'
 import * as v from 'valibot'
-import type { WalletMetadata } from '../../v-wallet-metadata.js'
+import type { WalletMetadata } from '../../models/v-wallet-metadata'
 
 /**
  * Fetch a request object and parse the response.
