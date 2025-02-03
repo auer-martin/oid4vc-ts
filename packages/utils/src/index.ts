@@ -43,3 +43,6 @@ export {
   parseWwwAuthenticateHeader,
   type WwwAuthenticateHeaderChallenge,
 } from './www-authenticate'
+
+export { xWwwFormUrlEncodeObject } from './x-www-form-url-encode'
+export { uriDecodeObject } from './uri-encode-object'

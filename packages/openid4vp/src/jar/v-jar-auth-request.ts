@@ -10,17 +10,17 @@ export const vJarAuthRequest = v.object({
 })
 export type JarAuthRequest = v.InferOutput<typeof vJarAuthRequest>
 
-export function validateJarAuthRequest(input: { jar_auth_request: JarAuthRequest }) {
-  const { jar_auth_request } = input
+export function validateJarAuthRequest(input: { jarAuthRequest: JarAuthRequest }) {
+  const { jarAuthRequest } = input
 
-  if (jar_auth_request.request && jar_auth_request.request_uri) {
+  if (jarAuthRequest.request && jarAuthRequest.request_uri) {
     throw new Oauth2ServerErrorResponseError({
       error: 'invalid_request_object',
       error_description: 'request and request_uri cannot both be present in a JAR request',
     })
   }
 
-  if (!jar_auth_request.request && !jar_auth_request.request_uri) {
+  if (!jarAuthRequest.request && !jarAuthRequest.request_uri) {
     throw new Oauth2ServerErrorResponseError({
       error: 'invalid_request_object',
       error_description: 'request or request_uri must be present',

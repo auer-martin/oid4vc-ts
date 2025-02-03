@@ -15,9 +15,8 @@ export interface ValidateJarRequestAgainstSessionOptions {
  * with the jar session metadata.
  *
  * @param input - The input object containing the session ID and the JAR metadata.
- * @param input.jar_meta - The actual (received) JAR request metadata.
- * @param input.jar_meta.protected_by - The security mechanism used by the JAR request.
- * @param input.jar_meta.send_by - The sending mechanism used by the JAR request
+ * @param input.jarMeta - The actual (received) JAR request metadata.
+ * @param input.jarSessionMeta - The session metadata.
  *
  * @returns A promise that resolves to the session metadata if validation is successful.
  *

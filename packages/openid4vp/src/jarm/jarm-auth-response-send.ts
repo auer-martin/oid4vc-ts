@@ -1,5 +1,5 @@
 import { type CallbackContext, Oauth2Error } from '@openid4vc/oauth2'
-import { URL, defaultFetcher } from '@openid4vc/utils'
+import { ContentType, URL, defaultFetcher } from '@openid4vc/utils'
 
 interface JarmAuthResponseSendOptions {
   authRequest: {
@@ -29,12 +29,12 @@ async function handleDirectPostJwt(
 ) {
   const response = await (callbacks.fetch ?? defaultFetcher)(responseEndpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Content-Type': ContentType.XWwwFormUrlencoded },
     body: `response=${responseJwt}`,
   })
 
   return {
-    response_mode: 'direct_post.jwt',
+    responseMode: 'direct_post.jwt',
     response,
   } as const
 }

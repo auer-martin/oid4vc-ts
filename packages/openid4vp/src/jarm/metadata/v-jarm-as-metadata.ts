@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-export const JarmServerMetadata = v.object({
+export const vJarmServerMetadata = v.object({
   authorization_signing_alg_values_supported: v.pipe(
     v.array(v.string()),
     v.description(
@@ -23,12 +23,4 @@ export const JarmServerMetadata = v.object({
   ),
 })
 
-/**
- * Authorization servers SHOULD publish the supported algorithms for signing and encrypting the JWT of an authorization response by utilizing OAuth 2.0 Authorization Server Metadata [RFC8414] parameters.
- */
-export namespace JarmServerMetadata {
-  export type Input = v.InferInput<typeof JarmServerMetadata>
-  export type Output = v.InferOutput<typeof JarmServerMetadata>
-}
-
-export type JarmServerMetadata = JarmServerMetadata.Output
+export type JarmServerMetadata = v.InferOutput<typeof vJarmServerMetadata>

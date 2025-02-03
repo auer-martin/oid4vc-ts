@@ -9,8 +9,13 @@ import {
   vCompactJwe,
   vCompactJwt,
 } from '@openid4vc/oauth2'
-import { jarmAuthResponseValidate } from './jarm-validate-auth-response.js'
-import { JarmAuthResponse, JarmAuthResponseEncryptedOnly } from './m-jarm-auth-response.js'
+import { jarmAuthResponseValidate } from './jarm-validate-auth-response'
+import {
+  type JarmAuthResponse,
+  type JarmAuthResponseEncryptedOnly,
+  vJarmAuthResponse,
+  vJarmAuthResponseEncryptedOnly,
+} from './v-jarm-auth-response'
 
 /**
  * The client decrypts the JWT using the default key for the respective issuer or,
@@ -20,17 +25,17 @@ import { JarmAuthResponse, JarmAuthResponseEncryptedOnly } from './m-jarm-auth-r
  * or a key derived from its client secret (see Section 2.2).
  */
 const decryptJarmRequestData = async (options: {
-  request_data: string
+  requestData: string
   callbacks: Pick<CallbackContext, 'decryptJwe'>
 }) => {
-  const { request_data, callbacks } = options
+  const { requestData, callbacks } = options
 
-  const { header } = decodeJweHeader({ jwe: request_data })
+  const { header } = decodeJweHeader({ jwe: requestData })
   if (!header.kid) {
     throw new Oauth2Error('Jarm JWE is missing the protected header field "kid".')
   }
 
-  const result = await callbacks.decryptJwe(request_data)
+  const result = await callbacks.decryptJwe(requestData)
   if (!result.decrypted) {
     throw new Oauth2Error('Failed to decrypt jarm auth response.')
   }
@@ -43,19 +48,19 @@ const decryptJarmRequestData = async (options: {
  * * The decryption key should be resolvable using the the protected header's 'kid' field
  * * The signature verification jwk should be resolvable using the jws protected header's 'kid' field and the payload's 'iss' field.
  */
-export async function jarmAuthResponseHandle(options: {
-  jarm_auth_response_jwt: string
+export async function verifyJarmAuthResponse(options: {
+  jarmAuthResponseJwt: string
   getAuthRequest: (
     authResponse: JarmAuthResponse | JarmAuthResponseEncryptedOnly
-  ) => Promise<{ auth_request: { client_id: string; nonce: string; state?: string } }>
+  ) => Promise<{ authRequest: { client_id: string; nonce: string; state?: string } }>
   callbacks: Pick<CallbackContext, 'decryptJwe' | 'verifyJwt'>
 }) {
-  const { jarm_auth_response_jwt } = options
+  const { jarmAuthResponseJwt } = options
 
-  const requestDataIsEncrypted = v.is(vCompactJwe, jarm_auth_response_jwt)
+  const requestDataIsEncrypted = v.is(vCompactJwe, jarmAuthResponseJwt)
   const decryptedRequestData = requestDataIsEncrypted
-    ? await decryptJarmRequestData({ request_data: jarm_auth_response_jwt, callbacks: options.callbacks })
-    : jarm_auth_response_jwt
+    ? await decryptJarmRequestData({ requestData: jarmAuthResponseJwt, callbacks: options.callbacks })
+    : jarmAuthResponseJwt
 
   const responseIsSigned = v.is(vCompactJwt, decryptedRequestData)
   if (!requestDataIsEncrypted && !responseIsSigned) {
@@ -69,7 +74,7 @@ export async function jarmAuthResponseHandle(options: {
       jwt: decryptedRequestData,
     })
 
-    const response = v.parse(JarmAuthResponse, jwsPayload)
+    const response = v.parse(vJarmAuthResponse, jwsPayload)
 
     if (!jwsProtectedHeader.kid) {
       throw new Oauth2Error('Jarm JWS is missing the protected header field "kid".')
@@ -89,12 +94,12 @@ export async function jarmAuthResponseHandle(options: {
     jarmAuthResponse = response
   } else {
     const jsonRequestData: unknown = JSON.parse(decryptedRequestData)
-    jarmAuthResponse = v.parse(JarmAuthResponseEncryptedOnly, jsonRequestData)
+    jarmAuthResponse = v.parse(vJarmAuthResponseEncryptedOnly, jsonRequestData)
   }
 
-  const { auth_request } = await options.getAuthRequest(jarmAuthResponse)
+  const { authRequest } = await options.getAuthRequest(jarmAuthResponse)
 
-  jarmAuthResponseValidate({ auth_request, auth_response: jarmAuthResponse })
+  jarmAuthResponseValidate({ authRequest, authResponse: jarmAuthResponse })
 
   let type: 'signed encrypted' | 'encrypted' | 'signed'
   if (responseIsSigned && requestDataIsEncrypted) {
@@ -106,5 +111,5 @@ export async function jarmAuthResponseHandle(options: {
   }
 
   const issuer = jarmAuthResponse.iss
-  return { auth_request, auth_response: jarmAuthResponse, type, issuer }
+  return { authRequest, jarmAuthResponse, type, issuer }
 }

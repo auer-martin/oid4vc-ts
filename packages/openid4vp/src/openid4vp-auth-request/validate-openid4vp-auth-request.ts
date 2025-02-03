@@ -2,10 +2,7 @@ import { Oauth2Error } from '@openid4vc/oauth2'
 import type { Openid4vpAuthRequest } from './v-openid4vp-auth-request'
 
 /**
- *
- * @param params
- * @param options
- *  @params options.walletNonce - The nonce value passed by the Wallet in the POST | GET request to fetch the request object.
+ * Validate the OpenId4Vp Authorization Request parameters
  */
 export const validateOpenid4vpAuthRequestParams = (
   params: Openid4vpAuthRequest,
@@ -15,19 +12,13 @@ export const validateOpenid4vpAuthRequestParams = (
     }
   }
 ) => {
-  if (params.redirect_uri && !params.response_uri) {
-    throw new Oauth2Error('OpenId4Vp Authorization Request redirect_uri is required when response_uri is not provided.')
+  if (!params.redirect_uri && !params.response_uri) {
+    throw new Oauth2Error('OpenId4Vp Authorization Request redirect_uri or response_uri is required.')
   }
 
-  if (params.response_uri && !['direct_post', 'direct_post.jwt'].includes(params.response_mode ?? '')) {
+  if (params.response_uri && !['direct_post', 'direct_post.jwt'].find((mode) => mode === params.response_mode)) {
     throw new Oauth2Error(
       `OpenId4Vp Authorization Request response_mode must be direct_post or direct_post.jwt when response_uri is provided. Current: ${params.response_mode}`
-    )
-  }
-
-  if (params.presentation_definition && params.presentation_definition_uri) {
-    throw new Oauth2Error(
-      'OpenId4Vp Authorization Request presentation_definition and presentation_definition_uri cannot be provided together.'
     )
   }
 
@@ -46,11 +37,7 @@ export const validateOpenid4vpAuthRequestParams = (
     )
   }
 
-  if (params.transaction_data) {
-    // TODO:The Wallet MUST return an error if a request contains even one unrecognized transaction data type or transaction data not conforming to the respective type definition. In addition to the parameters determined by the type of transaction data
-  }
-
-  if (params.trust_chain && (!params.client_id.startsWith('http://') || !params.client_id.startsWith('https://'))) {
+  if (params.trust_chain && !params.client_id.startsWith('http://') && !params.client_id.startsWith('https://')) {
     throw new Oauth2Error(
       'OpenId4Vp Authorization Request trust_chain parameter MUST NOT be present if the client_id is not an OpenId Federation Entity Identifier starting with http:// or https://.'
     )

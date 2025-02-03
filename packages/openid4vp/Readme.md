@@ -1,5 +1,10 @@
 # TODO LIST
 
+Make sure to throw proper errors.
+IdToken Handling. Also required in openid4vp
+Nonce handling to it immediately
+// TODO:The Wallet MUST return an error if a request contains even one unrecognized transaction data type or transaction data not conforming to the respective type definition. In addition to the parameters determined by the type of transaction data
+
 # IETF Security Topics
 
 ## The authorization Request should extend an oauth request

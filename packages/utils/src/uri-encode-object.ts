@@ -1,4 +1,4 @@
-import { URLSearchParams } from '@openid4vc/utils'
+import { URLSearchParams } from './globals'
 export const uriEncodeObject = (obj: Record<string, unknown>) => {
   return Object.entries(obj)
     .map(

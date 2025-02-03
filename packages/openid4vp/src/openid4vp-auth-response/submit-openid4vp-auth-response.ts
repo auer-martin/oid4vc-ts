@@ -1,9 +1,9 @@
 import type { CallbackContext } from '@openid4vc/oauth2'
 import { ContentType, defaultFetcher } from '@openid4vc/utils'
-import { jarmAuthResponseSend } from '../jarm/jarm-auth-response-send.js'
-import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request.js'
-import type { Openid4vpAuthResponse } from './v-openid4vp-auth-response.js'
-import { xWwwFormUrlEncodeObject } from './x-www-form-url-encode.js'
+import { xWwwFormUrlEncodeObject } from '@openid4vc/utils'
+import { jarmAuthResponseSend } from '../jarm/jarm-auth-response-send'
+import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request'
+import type { Openid4vpAuthResponse } from './v-openid4vp-auth-response'
 
 export async function submitOpenid4vpAuthorizationResponse(input: {
   request: Pick<Openid4vpAuthRequest, 'redirect_uri' | 'response_uri'>
@@ -18,16 +18,16 @@ export async function submitOpenid4vpAuthorizationResponse(input: {
     return jarmAuthResponseSend({
       authRequest: request,
       jarmAuthResponseJwt: jarm.responseJwt,
+      callbacks,
     })
   }
-
-  const encodedResponse = xWwwFormUrlEncodeObject(response)
 
   if (!url) {
     throw new Error('No redirect_uri or response_uri provided')
   }
 
   const fetch = callbacks.fetch ?? defaultFetcher
+  const encodedResponse = xWwwFormUrlEncodeObject(response)
   const submissionResponse = await fetch(url, {
     method: 'POST',
     body: encodedResponse,
@@ -37,7 +37,7 @@ export async function submitOpenid4vpAuthorizationResponse(input: {
   })
 
   return {
-    response_mode: 'direct_post',
+    responseMode: 'direct_post',
     response: submissionResponse,
   }
 }

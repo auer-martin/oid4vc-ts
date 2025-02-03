@@ -1,6 +1,6 @@
 import type { CallbackContext, JwtSigner } from '@openid4vc/oauth2'
+import { uriEncodeObject } from '@openid4vc/utils'
 import { createJarAuthRequest } from '../jar/create-jar-auth-request'
-import { uriEncodeObject } from './uri-encode-object'
 import type { Openid4vpAuthRequest } from './v-openid4vp-auth-request'
 import { validateOpenid4vpAuthRequestParams } from './validate-openid4vp-auth-request'
 
@@ -44,17 +44,14 @@ export async function createOpenid4vpAuthorizationRequest(input: {
 
   if (jar) {
     if (!jar.additionalJwtPayload?.aud) {
-      additionalJwtPayload = {
-        ...jar.additionalJwtPayload,
-        aud: jar.requestUri,
-      }
+      additionalJwtPayload = { ...jar.additionalJwtPayload, aud: jar.requestUri }
     }
   }
 
   if (jar) {
     const jarResult = await createJarAuthRequest({
       ...jar,
-      auth_request_params: requestParams,
+      authRequestParams: requestParams,
       additionalJwtPayload,
       callbacks,
     })

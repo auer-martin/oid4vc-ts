@@ -1,9 +1,9 @@
 import { Oauth2Error } from '@openid4vc/oauth2'
-import type { verifyJarRequest } from '../jar/index.js'
-import type { ClientMetadata } from '../models/v-client-metadata.js'
-import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request.js'
-import type { X509Callbacks } from '../openid4vp-auth-request/x509-callbacks.js'
-import { type ClientIdScheme, vClientIdScheme } from './v-client-id-scheme.js'
+import type { CallbackContext } from '../../../oauth2/src/callbacks'
+import type { verifyJarRequest } from '../jar/handle-jar-request/verify-jar-request.js'
+import type { ClientMetadata } from '../models/v-client-metadata'
+import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request'
+import { type ClientIdScheme, vClientIdScheme } from './v-client-id-scheme'
 
 /**
  * Result of parsing a client identifier
@@ -59,7 +59,7 @@ export function parseClientIdentifier(
   options: {
     request: Openid4vpAuthRequest
     jar?: Awaited<ReturnType<typeof verifyJarRequest>>
-    callbacks: Partial<X509Callbacks>
+    callbacks: Partial<Pick<CallbackContext, 'getX509SanDnsNames' | 'getX509SanUriNames'>>
   },
   parserConfig?: ClientIdentifierParserConfig
 ): ParsedClientIdentifier {
@@ -67,7 +67,7 @@ export function parseClientIdentifier(
   const clientId = request.client_id
 
   if (!clientId?.length) {
-    throw new Oauth2Error('Invalid or empty client identifier.')
+    throw new Oauth2Error('Failed to parse client identifier. Client identifier is missing or empty.')
   }
 
   // By default require signatures for these schemes
@@ -87,10 +87,7 @@ export function parseClientIdentifier(
       ] satisfies ClientIdScheme[]),
   }
 
-  // Check for scheme delimiter
   const colonIndex = clientId.indexOf(':')
-
-  // No scheme delimiter means pre-registered client the default scheme
   if (colonIndex === -1) {
     return {
       scheme: 'pre-registered',
@@ -103,13 +100,11 @@ export function parseClientIdentifier(
   const schemePart = clientId.substring(0, colonIndex)
   const identifierPart = clientId.substring(colonIndex + 1)
 
-  // Validate the scheme is supported
   if (!parserConfigWithDefaults.supportedSchemes.includes(schemePart as ClientIdScheme)) {
     throw new Oauth2Error(`Unsupported client identifier scheme. ${schemePart} is not supported.`)
   }
 
   const scheme = schemePart as ClientIdScheme
-
   if (scheme === 'https') {
     if (!clientId.startsWith('https://') && !clientId.startsWith('http://')) {
       throw new Oauth2Error(

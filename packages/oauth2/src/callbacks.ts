@@ -123,4 +123,14 @@ export interface CallbackContext {
    * scenarios where multiple authorization servers are supported.
    */
   clientAuthentication: ClientAuthenticationCallback
+
+  /**
+   * Get the DNS names from a X.509 certificate
+   */
+  getX509SanDnsNames?: (certificate: string) => string[]
+
+  /**
+   * Get the URI names from a X.509 certificate
+   */
+  getX509SanUriNames?: (certificate: string) => string[]
 }

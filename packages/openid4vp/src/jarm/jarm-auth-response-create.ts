@@ -5,7 +5,7 @@ import {
   Oauth2Error,
   jwtHeaderFromJwtSigner,
 } from '@openid4vc/oauth2'
-import type { JarmAuthResponse, JarmAuthResponseEncryptedOnly } from './jarm-auth-response/m-jarm-auth-response.js'
+import type { JarmAuthResponse, JarmAuthResponseEncryptedOnly } from './jarm-auth-response/v-jarm-auth-response'
 
 export interface CreateJarmAuthResponseOptions {
   jarmAuthResponse: JarmAuthResponse | JarmAuthResponseEncryptedOnly
@@ -18,7 +18,7 @@ export async function createJarmAuthResponse(input: CreateJarmAuthResponseOption
   const { jarmAuthResponse, jwtEncryptor, jwtSigner, callbacks } = input
   if (!jwtSigner && jwtEncryptor) {
     const { jwe } = await callbacks.encryptJwe(jwtEncryptor, JSON.stringify(jarmAuthResponse))
-    return { jarm_auth_response_jwt: jwe }
+    return { jarmAuthResponseJwt: jwe }
   }
 
   if (jwtSigner && !jwtEncryptor) {
@@ -26,7 +26,7 @@ export async function createJarmAuthResponse(input: CreateJarmAuthResponseOption
       header: jwtHeaderFromJwtSigner(jwtSigner),
       payload: jarmAuthResponse,
     })
-    return { jarm_auth_response_jwt: signed.jwt }
+    return { jarmAuthResponseJwt: signed.jwt }
   }
 
   if (!jwtSigner || !jwtEncryptor) {
@@ -39,5 +39,5 @@ export async function createJarmAuthResponse(input: CreateJarmAuthResponseOption
 
   const encrypted = await callbacks.encryptJwe(jwtEncryptor, signed.jwt)
 
-  return { jarm_auth_response_jwt: encrypted.jwe }
+  return { jarmAuthResponseJwt: encrypted.jwe }
 }

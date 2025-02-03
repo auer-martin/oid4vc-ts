@@ -1,6 +1,6 @@
 import * as v from 'valibot'
-import { vClientIdScheme } from '../client-identifier-scheme/v-client-id-scheme.js'
-import { vVpFormatsSupported } from './v-vp-formats-supported.js'
+import { vClientIdScheme } from '../client-identifier-scheme/v-client-id-scheme'
+import { vVpFormatsSupported } from './v-vp-formats-supported'
 
 export const vWalletMetadata = v.looseObject({
   presentation_definition_uri_supported: v.optional(v.boolean(), true),

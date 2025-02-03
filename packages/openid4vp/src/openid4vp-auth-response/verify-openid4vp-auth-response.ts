@@ -1,44 +1,11 @@
 import { Oauth2Error } from '@openid4vc/oauth2'
-import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request.js'
+import type { Openid4vpAuthRequest } from '../openid4vp-auth-request/v-openid4vp-auth-request'
 import {
-  type VpTokenPresentationParseResult,
   parsePresentationsFromVpToken,
   parseSinglePresentationsFromVpToken,
-} from '../vp-token/parse-presentations-from-vp-token.js'
+} from '../vp-token/parse-presentations-from-vp-token'
 import type { Openid4vpAuthResponse } from './v-openid4vp-auth-response'
-
-export type VerifyOpenid4VpAuthorizationResponseResult =
-  | {
-      type: 'pex'
-      pex: {
-        presentation_submission: unknown
-        presentations: [VpTokenPresentationParseResult, ...VpTokenPresentationParseResult[]]
-      } & (
-        | {
-            scope: string
-            presentation_definition?: never
-          }
-        | {
-            scope?: never
-            presentation_definition: Record<string, unknown> | string
-          }
-      )
-    }
-  | {
-      type: 'dcql'
-      dcql: {
-        presentation: VpTokenPresentationParseResult
-      } & (
-        | {
-            scope: string
-            query?: never
-          }
-        | {
-            scope?: never
-            query: unknown
-          }
-      )
-    }
+import type { VerifyOpenid4VpAuthorizationResponseResult } from './verify-openid4vp-auth-response-result'
 
 /**
  * The following steps need to be done manually
@@ -55,12 +22,7 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
   const { requestParams, responseParams } = options
   // todo i think the response prarms  should also contain a nonce
   if (!responseParams.vp_token) {
-    throw new Oauth2Error('vp_token is required')
-  }
-
-  // The response should not contain a nonce. It should be in the presentation
-  if (responseParams.nonce && requestParams.nonce !== responseParams.nonce) {
-    throw new Oauth2Error('OpenId4Vp Authorization Response nonce mismatch.')
+    throw new Oauth2Error('Failed to verify OpenId4Vp Authorization Response. vp_token is missing.')
   }
 
   if (requestParams.state !== responseParams.state) {
@@ -77,18 +39,25 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
       throw new Oauth2Error('OpenId4Vp Authorization Request is missing the required presentation_definition.')
     }
 
-    const presentations = parsePresentationsFromVpToken({ vp_token: responseParams.vp_token })
+    // TODO: ENABLE THIS CHECK ALL THE TIME ONCE WE KNOW HOW TO GET THE NONCE FOR MDOCS AND ANONCREDS
+    const presentations = parsePresentationsFromVpToken({ vpToken: responseParams.vp_token })
+    if (presentations.every((p) => p.nonce) && !presentations.every((p) => p.nonce === requestParams.nonce)) {
+      throw new Oauth2Error(
+        'Presentation nonce mismatch. The nonce of some presentations does not match the nonce of the request.'
+      )
+    }
+
     return {
       type: 'pex',
       pex: requestParams.scope
         ? {
             scope: requestParams.scope,
-            presentation_submission: responseParams.presentation_submission,
+            presentationSubmission: responseParams.presentation_submission,
             presentations,
           }
         : {
-            presentation_definition: requestParams.presentation_definition,
-            presentation_submission: responseParams.presentation_submission,
+            presentationDefinition: requestParams.presentation_definition,
+            presentationSubmission: responseParams.presentation_submission,
             presentations,
           },
     }
@@ -105,7 +74,14 @@ export function verifyOpenid4vpAuthorizationResponse(options: {
       throw new Oauth2Error('If DCQL was used the vp_token must be a JSON-encoded object.')
     }
 
-    const presentation = parseSinglePresentationsFromVpToken({ vp_token: responseParams.vp_token, path: '$' })
+    // TODO: ENABLE THIS CHECK ALL THE TIME ONCE WE KNOW HOW TO GET THE NONCE FOR MDOCS AND ANONCREDS
+    const presentation = parseSinglePresentationsFromVpToken({ vpToken: responseParams.vp_token, path: '$' })
+    if (presentation.nonce && requestParams.nonce !== presentation.nonce) {
+      throw new Oauth2Error(
+        'Presentation nonce mismatch. The nonce of the presentation does not match the nonce of the request.'
+      )
+    }
+
     return {
       type: 'dcql',
       dcql: requestParams.scope

@@ -20,37 +20,37 @@ import { type JarAuthRequest, validateJarAuthRequest } from '../v-jar-auth-reque
  * Verifies a JAR (JWT Secured Authorization Request) request by validating, decrypting, and verifying signatures.
  *
  * @param options - The input parameters
- * @param options.jar_request_params - The JAR authorization request parameters
+ * @param options.jarRequestParams - The JAR authorization request parameters
  * @param options.callbacks - Context containing the relevant Jose crypto operations
  * @returns The verified authorization request parameters and metadata
  */
 export async function verifyJarRequest(options: {
-  jar_request_params: JarAuthRequest
+  jarRequestParams: JarAuthRequest
   callbacks: Pick<CallbackContext, 'verifyJwt' | 'decryptJwe'>
   wallet?: {
     metadata?: WalletMetadata
     nonce?: string
   }
 }): Promise<{
-  auth_request_params: JarRequestObjectPayload
-  send_by: 'value' | 'reference'
+  authRequestParams: JarRequestObjectPayload
+  sendBy: 'value' | 'reference'
   encryptionJwk?: Jwk
   signerJwk: Jwk
   jwtSigner: JwtSigner
 }> {
-  const { jar_request_params, callbacks, wallet } = options
+  const { jarRequestParams, callbacks, wallet } = options
 
-  validateJarAuthRequest({ jar_auth_request: jar_request_params })
+  validateJarAuthRequest({ jarAuthRequest: jarRequestParams })
 
-  const send_by = jar_request_params.request ? 'value' : 'reference'
+  const sendBy = jarRequestParams.request ? 'value' : 'reference'
 
   const requestObject =
-    jar_request_params.request ??
+    jarRequestParams.request ??
     (await fetchJarRequestObject(
       // biome-ignore lint/style/noNonNullAssertion:
-      jar_request_params.request_uri!,
-      jar_request_params.client_id.split(':')[0],
-      jar_request_params.request_uri_method ?? 'GET',
+      jarRequestParams.request_uri!,
+      jarRequestParams.client_id.split(':')[0],
+      jarRequestParams.request_uri_method ?? 'GET',
       wallet ?? {}
     ))
 
@@ -64,21 +64,21 @@ export async function verifyJarRequest(options: {
     throw new Oauth2Error('Jar Request Object is not a valid JWS.')
   }
 
-  const { auth_request_params, signerJwk, jwtSigner } = await verifyJarRequestObject({
+  const { authRequestParams, signerJwk, jwtSigner } = await verifyJarRequestObject({
     decryptedRequestObject,
     callbacks,
   })
-  if (!auth_request_params.client_id) {
+  if (!authRequestParams.client_id) {
     throw new Oauth2Error('Jar Request Object is missing the required "client_id" field.')
   }
 
-  if (jar_request_params.client_id !== auth_request_params.client_id) {
+  if (jarRequestParams.client_id !== authRequestParams.client_id) {
     throw new Oauth2Error('client_id does not match the request object client_id.')
   }
 
   return {
-    send_by,
-    auth_request_params,
+    sendBy,
+    authRequestParams,
     signerJwk,
     encryptionJwk,
     jwtSigner,
@@ -125,5 +125,5 @@ async function verifyJarRequestObject(options: {
     throw new Oauth2Error('Jar Request Object signature verification failed.')
   }
 
-  return { auth_request_params: jwt.payload, signerJwk, jwtSigner }
+  return { authRequestParams: jwt.payload, signerJwk, jwtSigner }
 }

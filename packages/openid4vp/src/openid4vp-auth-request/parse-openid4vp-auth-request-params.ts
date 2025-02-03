@@ -1,20 +1,24 @@
 import { Oauth2Error, decodeJwt } from '@openid4vc/oauth2'
+import { uriDecodeObject } from '@openid4vc/utils'
 import * as v from 'valibot'
-import { type JarAuthRequest, vJarAuthRequest } from '../jar/v-jar-auth-request.js'
-import { uriDecodeObject } from './uri-encode-object.js'
-import { type Openid4vpAuthRequest, vOpenid4vpAuthRequest } from './v-openid4vp-auth-request.js'
+import { type JarAuthRequest, vJarAuthRequest } from '../jar/v-jar-auth-request'
+import { type Openid4vpAuthRequest, vOpenid4vpAuthRequest } from './v-openid4vp-auth-request'
 
-export function parseOpenid4vpRequestParams(input: unknown):
-  | {
-      type: 'jar'
-      provided: 'uri' | 'jwt' | 'params'
-      params: JarAuthRequest
-    }
-  | {
-      type: 'openid4vp'
-      provided: 'uri' | 'jwt' | 'params'
-      params: Openid4vpAuthRequest
-    } {
+export interface ParsedJarOpenid4vpAuthRequest {
+  type: 'jar'
+  provided: 'uri' | 'jwt' | 'params'
+  params: JarAuthRequest
+}
+
+export interface ParsedOpenid4vpAuthRequest {
+  type: 'openid4vp'
+  provided: 'uri' | 'jwt' | 'params'
+  params: Openid4vpAuthRequest
+}
+
+export function parseOpenid4vpRequestParams(
+  input: unknown
+): ParsedOpenid4vpAuthRequest | ParsedJarOpenid4vpAuthRequest {
   let params = input
   let provided: 'uri' | 'jwt' | 'params' = 'params'
 

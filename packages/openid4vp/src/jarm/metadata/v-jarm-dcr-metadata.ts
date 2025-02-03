@@ -1,7 +1,7 @@
 import { Oauth2Error } from '@openid4vc/oauth2'
 import * as v from 'valibot'
 
-export const JarmSignOnlyClientMetadata = v.object({
+export const vJarmSignOnlyClientMetadata = v.object({
   authorization_signed_response_alg: v.pipe(
     v.string(),
     v.description(
@@ -12,9 +12,9 @@ export const JarmSignOnlyClientMetadata = v.object({
   authorization_encrypted_response_alg: v.optional(v.never()),
   authorization_encrypted_response_enc: v.optional(v.never()),
 })
-export type JarmSignOnlyClientMetadata = v.InferOutput<typeof JarmSignOnlyClientMetadata>
+export type JarmSignOnlyClientMetadata = v.InferOutput<typeof vJarmSignOnlyClientMetadata>
 
-export const JarmEncryptOnlyClientMetadata = v.object({
+export const vJarmEncryptOnlyClientMetadata = v.object({
   authorization_signed_response_alg: v.optional(v.never()),
   authorization_encrypted_response_alg: v.pipe(
     v.string(),
@@ -30,37 +30,33 @@ export const JarmEncryptOnlyClientMetadata = v.object({
     )
   ),
 })
-export type JarmEncryptOnlyClientMetadata = v.InferOutput<typeof JarmEncryptOnlyClientMetadata>
+export type JarmEncryptOnlyClientMetadata = v.InferOutput<typeof vJarmEncryptOnlyClientMetadata>
 
-export const JarmSignEncryptClientMetadata = v.object({
-  authorization_signed_response_alg: JarmSignOnlyClientMetadata.entries.authorization_signed_response_alg,
-  authorization_encrypted_response_alg: JarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_alg,
-  authorization_encrypted_response_enc: JarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_enc,
+export const vJarmSignEncryptClientMetadata = v.object({
+  authorization_signed_response_alg: vJarmSignOnlyClientMetadata.entries.authorization_signed_response_alg,
+  authorization_encrypted_response_alg: vJarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_alg,
+  authorization_encrypted_response_enc: vJarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_enc,
 })
-export type JarmSignEncryptClientMetadata = v.InferOutput<typeof JarmSignEncryptClientMetadata>
+export type JarmSignEncryptClientMetadata = v.InferOutput<typeof vJarmSignEncryptClientMetadata>
 
 /**
  * Clients may register their public encryption keys using the jwks_uri or jwks metadata parameters.
  */
 export const JarmClientMetadata = v.object({
-  authorization_signed_response_alg: v.optional(JarmSignOnlyClientMetadata.entries.authorization_signed_response_alg),
+  authorization_signed_response_alg: v.optional(vJarmSignOnlyClientMetadata.entries.authorization_signed_response_alg),
   authorization_encrypted_response_alg: v.optional(
-    JarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_alg
+    vJarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_alg
   ),
   authorization_encrypted_response_enc: v.optional(
-    JarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_enc
+    vJarmEncryptOnlyClientMetadata.entries.authorization_encrypted_response_enc
   ),
 })
-export namespace JarmClientMetadata {
-  export type Input = v.InferInput<typeof JarmClientMetadata>
-  export type Output = v.InferOutput<typeof JarmClientMetadata>
-}
-export type JarmClientMetadata = JarmClientMetadata.Output
+export type JarmClientMetadata = v.InferOutput<typeof JarmClientMetadata>
 
 export const JarmClientMetadataParsed = v.pipe(
   JarmClientMetadata,
   v.transform((client_metadata) => {
-    if (v.is(JarmSignEncryptClientMetadata, client_metadata)) {
+    if (v.is(vJarmSignEncryptClientMetadata, client_metadata)) {
       return {
         type: 'sign_encrypt',
         client_metadata: {
@@ -70,7 +66,7 @@ export const JarmClientMetadataParsed = v.pipe(
       } as const
     }
 
-    if (v.is(JarmEncryptOnlyClientMetadata, client_metadata)) {
+    if (v.is(vJarmEncryptOnlyClientMetadata, client_metadata)) {
       return {
         type: 'encrypt',
         client_metadata: {
@@ -81,7 +77,7 @@ export const JarmClientMetadataParsed = v.pipe(
     }
 
     // this must be the last entry
-    if (v.is(JarmSignOnlyClientMetadata, client_metadata)) {
+    if (v.is(vJarmSignOnlyClientMetadata, client_metadata)) {
       return {
         type: 'sign',
         client_metadata: {

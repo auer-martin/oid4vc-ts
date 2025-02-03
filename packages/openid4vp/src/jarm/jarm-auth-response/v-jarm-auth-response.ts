@@ -1,7 +1,7 @@
 import { vJwtPayload } from '@openid4vc/oauth2'
 import * as v from 'valibot'
 
-export const JarmAuthResponse = v.looseObject({
+export const vJarmAuthResponse = v.looseObject({
   /**
    * iss: The issuer URL of the authorization server that created the response
    * aud: The client_id of the client the response is intended for
@@ -11,11 +11,11 @@ export const JarmAuthResponse = v.looseObject({
   state: v.optional(v.string()),
 })
 
-export type JarmAuthResponse = v.InferInput<typeof JarmAuthResponse>
+export type JarmAuthResponse = v.InferInput<typeof vJarmAuthResponse>
 
-export const JarmAuthResponseEncryptedOnly = v.looseObject({
+export const vJarmAuthResponseEncryptedOnly = v.looseObject({
   ...vJwtPayload.entries,
   state: v.optional(v.string()),
 })
 
-export type JarmAuthResponseEncryptedOnly = v.InferInput<typeof JarmAuthResponseEncryptedOnly>
+export type JarmAuthResponseEncryptedOnly = v.InferInput<typeof vJarmAuthResponseEncryptedOnly>
